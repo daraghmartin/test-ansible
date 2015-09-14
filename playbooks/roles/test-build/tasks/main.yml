@@ -7,3 +7,35 @@
     key_name: "{{ key }}"
     group: [web]
     instance_tags: { Name: ansibletest, type: web, env: production }
+
+- name: create a vpc
+  local_action:
+      module: ec2_vpc
+      region: "{{ region }}"
+      internet_gateway: True
+      resource_tags: { Name: test, env: test }
+      cidr_block: "{{ cidr_lhs }}.0.0/16"
+      subnets:
+        - cidr: "{{ cidr_lhs }}.0.0/24"
+          az: eu-west-1a
+          resource_tags:
+            env: test
+            tier: webA
+        - cidr: "{{ cidr_lhs }}.1.0/24"
+          az: eu-west-1b
+          resource_tags:
+            env: test
+            tier: webB
+        - cidr: "{{ cidr_lhs }}.2.0/24"
+          az: eu-west-1c
+          resource_tags:
+            env: test
+            tier: webC
+      route_tables:
+        - subnets:
+          - "{{ cidr_lhs }}.0.0/24"
+          - "{{ cidr_lhs }}.1.0/24"
+          - "{{ cidr_lhs }}.2.0/24"
+          routes:
+          - dest: 0.0.0.0/0
+            gw: igw
