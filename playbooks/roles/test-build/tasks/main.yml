@@ -1,0 +1,9 @@
+- name: Create an ubuntu instance on Amazon EC2
+  local_action:
+    module: ec2
+    image: "{{ default_image }}"
+    region: "{{ region }}"
+    instance_type: "{{ default_image_size }}"
+    key_name: "{{ key }}"
+    group: [web]
+    instance_tags: { Name: ansibletest, type: web, env: production }
