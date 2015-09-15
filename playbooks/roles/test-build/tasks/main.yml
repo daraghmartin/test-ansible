@@ -1,13 +1,3 @@
-#- name: Create an ubuntu instance on Amazon EC2
-#  local_action:
-#    module: ec2
-#    image: "{{ default_image }}"
-#    region: "{{ region }}"
-#    instance_type: "{{ default_image_size }}"
-#    key_name: "{{ key }}"
-#    group: [web]
-#    instance_tags: { Name: ansibletest, type: web, env: production }
-#
 - name: create a vpc
   local_action:
       module: ec2_vpc
@@ -15,22 +5,53 @@
       internet_gateway: True
       resource_tags: { Name: test, env: test }
       cidr_block: "{{ cidr_lhs }}.0.0/16"
+      #TODO: use sub_elements for loop
       subnets:
         - cidr: "{{ cidr_lhs }}.0.0/24"
           az: eu-west-1a
           resource_tags:
             env: test
-            tier: webA
+            tier: natA
         - cidr: "{{ cidr_lhs }}.1.0/24"
           az: eu-west-1b
           resource_tags:
             env: test
-            tier: webB
+            tier: natB
         - cidr: "{{ cidr_lhs }}.2.0/24"
           az: eu-west-1c
           resource_tags:
             env: test
+            tier: natC
+        - cidr: "{{ cidr_lhs }}.3.0/24"
+          az: eu-west-1a
+          resource_tags:
+            env: test
+            tier: webA
+        - cidr: "{{ cidr_lhs }}.4.0/24"
+          az: eu-west-1b
+          resource_tags:
+            env: test
+            tier: webB
+        - cidr: "{{ cidr_lhs }}.5.0/24"
+          az: eu-west-1c
+          resource_tags:
+            env: test
             tier: webC
+        - cidr: "{{ cidr_lhs }}.6.0/24"
+          az: eu-west-1a
+          resource_tags:
+            env: test
+            tier: mongoA
+        - cidr: "{{ cidr_lhs }}.7.0/24"
+          az: eu-west-1b
+          resource_tags:
+            env: test
+            tier: mongoB
+        - cidr: "{{ cidr_lhs }}.8.0/24"
+          az: eu-west-1c
+          resource_tags:
+            env: test
+            tier: mongoC
       route_tables:
         - subnets:
           - "{{ cidr_lhs }}.0.0/24"
@@ -82,16 +103,6 @@
       to_port: 22
       cidr_ip: 0.0.0.0/0
 
-#- name: outbound security group
-#  ec2_group:
-#name: vpc-outbound
-#description: allow outbound connections to the internet
-#region: "{{ region }}"
-#vpc_id: "{{ vpc_id }}"
-#rules_egress:
-#- proto: all
-#  cidr_ip: 0.0.0.0/0
-
 - name: Create nats
   local_action:
     module: ec2
@@ -109,6 +120,8 @@
     count_tag: 
       Name: "{{ environ|default('dev') }}_{{item.name}}"
     assign_public_ip: True
+    user_data: |
+      {{ lookup('template', 'templates/nat_user_data.j2') }}
   with_items:
     - { name: 'natA', id: 0 }
     - { name: 'natB', id: 1 }
@@ -116,3 +129,18 @@
   register: nat
 
 - debug: var=nat
+
+#- name: Set up NAT-protected route table
+#  ec2_vpc_route_table:
+#    vpc_id: vpc-1245678
+#    region: us-west-1
+#    tags:
+#      - Name: Internal
+#    subnets:
+#      - "{{ application_subnet.subnet_id }}"
+#      - 'Database Subnet'
+#      - '10.0.0.0/8'
+#    routes:
+#      - dest: 0.0.0.0/0
+#        instance_id: "{{ nat.instance_id }}"
+#  register: nat_route_table
