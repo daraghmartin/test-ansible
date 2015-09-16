@@ -3,3 +3,4 @@ region: eu-west-1
 default_image_size: t2.micro
 key: builder0
 cidr_lhs: 10.0
+env: test

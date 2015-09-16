@@ -1,77 +1,98 @@
 - name: create a vpc
   local_action:
-      module: ec2_vpc
-      region: "{{ region }}"
-      internet_gateway: True
-      resource_tags: { Name: test, env: test }
-      cidr_block: "{{ cidr_lhs }}.0.0/16"
-      #TODO: use sub_elements for loop
-      subnets:
-        - cidr: "{{ cidr_lhs }}.0.0/24"
-          az: eu-west-1a
-          resource_tags:
-            env: test
-            tier: natA
-        - cidr: "{{ cidr_lhs }}.1.0/24"
-          az: eu-west-1b
-          resource_tags:
-            env: test
-            tier: natB
-        - cidr: "{{ cidr_lhs }}.2.0/24"
-          az: eu-west-1c
-          resource_tags:
-            env: test
-            tier: natC
-        - cidr: "{{ cidr_lhs }}.3.0/24"
-          az: eu-west-1a
-          resource_tags:
-            env: test
-            tier: webA
-        - cidr: "{{ cidr_lhs }}.4.0/24"
-          az: eu-west-1b
-          resource_tags:
-            env: test
-            tier: webB
-        - cidr: "{{ cidr_lhs }}.5.0/24"
-          az: eu-west-1c
-          resource_tags:
-            env: test
-            tier: webC
-        - cidr: "{{ cidr_lhs }}.6.0/24"
-          az: eu-west-1a
-          resource_tags:
-            env: test
-            tier: mongoA
-        - cidr: "{{ cidr_lhs }}.7.0/24"
-          az: eu-west-1b
-          resource_tags:
-            env: test
-            tier: mongoB
-        - cidr: "{{ cidr_lhs }}.8.0/24"
-          az: eu-west-1c
-          resource_tags:
-            env: test
-            tier: mongoC
-      route_tables:
-        - subnets:
-          - "{{ cidr_lhs }}.0.0/24"
-          - "{{ cidr_lhs }}.1.0/24"
-          - "{{ cidr_lhs }}.2.0/24"
-          routes:
-          - dest: 0.0.0.0/0
-            gw: igw
+    module: ec2_vpc
+    region: "{{ region }}"
+    internet_gateway: True
+    resource_tags: { Name: test, env: test }
+    cidr_block: "{{ cidr_lhs }}.0.0/16"
   register: vpc
 
 - debug: var=vpc
 
-- name: Write out a temporary file for mapping subnet to id
-  template: src=templates/subnet_id.j2 dest=/tmp/subnet_id
-
-- name: Get the contents of subnet mapping file and set it as a fact
-  set_fact:
-    subnet_maps: "{{ lookup('file', '/tmp/subnet_id') }}"
-
 - set_fact: vpc_id={{ vpc.vpc_id }}
+
+#TODO: module for subnets
+- name: nat subnets
+  local_action:
+    module: ec2_vpc_subnet
+    vpc_id: "{{ vpc_id }}"
+    region: "{{ region }}"
+    cidr: "{{ cidr_lhs }}.{{ item.subnet }}.0/24"
+    az: "{{ region }}{{ item.az }}"
+    resource_tags:
+      env: "{{ env }}"
+      name: "nat{{ item.az }}"
+      tier: "nat"
+  with_items:
+    - { az: "a", subnet: "0" }
+    - { az: "b", subnet: "1" }
+    - { az: "c", subnet: "2" }
+  register: nat_subnets
+
+- debug: var=nat_subnets
+
+- name: web subnets
+  local_action:
+    module: ec2_vpc_subnet
+    vpc_id: "{{ vpc_id }}"
+    region: "{{ region }}"
+    cidr: "{{ cidr_lhs }}.{{ item.subnet }}.0/24"
+    az: "{{ region }}{{ item.az }}"
+    resource_tags:
+      env: "{{ env }}"
+      name: "web{{ item.az }}"
+      tier: "web"
+  with_items:
+    - { az: "a", subnet: "3" }
+    - { az: "b", subnet: "4" }
+    - { az: "c", subnet: "5" }
+  register: web_subnets
+
+- name: mongo subnets
+  local_action:
+    module: ec2_vpc_subnet
+    vpc_id: "{{ vpc_id }}"
+    region: "{{ region }}"
+    cidr: "{{ cidr_lhs }}.{{ item.subnet }}.0/24"
+    az: "{{ region }}{{ item.az }}"
+    resource_tags:
+      env: "{{ env }}"
+      name: "mongo{{ item.az }}"
+      tier: "db"
+  with_items:
+    - { az: "a", subnet: "6" }
+    - { az: "b", subnet: "7" }
+    - { az: "c", subnet: "8" }
+  register: mongo_subnets
+
+- name: internet gateway
+  local_action:
+    module: ec2_vpc_igw
+    vpc_id: "{{ vpc_id }}"
+    region: "{{ region }}"
+  register: igw
+
+- name: nat internet route table
+  local_action:
+    module: ec2_vpc_route_table
+    vpc_id: "{{ vpc_id }}"
+    region: "{{ region }}"
+    #TODO: base this on lookup
+    subnets:
+      - "{{ cidr_lhs }}.0.0/24"
+      - "{{ cidr_lhs }}.1.0/24"
+      - "{{ cidr_lhs }}.2.0/24"
+    routes:
+      - dest: 0.0.0.0/0
+        gateway_id: "{{ igw.gateway_id }}"
+  register: nat_route_table
+
+#- name: Write out a temporary file for mapping subnet to id
+#  template: src=templates/subnet_id.j2 dest=/tmp/subnet_id
+
+#- name: Get the contents of subnet mapping file and set it as a fact
+#  set_fact:
+#    subnet_maps: "{{ lookup('file', '/tmp/subnet_id') }}"
 
 - name: web security group
   local_action:
@@ -103,6 +124,9 @@
       to_port: 22
       cidr_ip: 0.0.0.0/0
 
+- debug: var=nat_subnets.results[0].subnet.id
+
+
 - name: Create nats
   local_action:
     module: ec2
@@ -111,8 +135,8 @@
     instance_type: "{{ default_image_size }}"
     key_name: "{{ key }}"
     group: [vpc-web, vpc-ssh]
-    instance_tags: { Name: ansibletest, type: web, env: production }
-    vpc_subnet_id: "{{ vpc.subnets[item.id].id}}"
+    instance_tags: { Name: ansibletest, type: nat, env: "{{ env }}" }
+    vpc_subnet_id: "{{ nat_subnets.results[item.id].subnet.id}}"
     wait: true
     instance_tags: 
       Name: "{{ environ|default('dev') + '_' + item.name }}"

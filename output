@@ -1,0 +1,242 @@
+Using /etc/ansible/ansible.cfg as config file
+1 plays in playbooks/test-provision.yml
+
+PLAY ***************************************************************************
+
+TASK [setup] *******************************************************************
+ok: [localhost]
+
+TASK [include_vars] ************************************************************
+ok: [localhost] => {"ansible_facts": {"cidr_lhs": 10.0, "default_image": "ami-47a23a30", "default_image_size": "t2.micro", "env": "test", "key": "builder0", "region": "eu-west-1"}, "changed": false}
+
+TASK [test-build : create a vpc] ***********************************************
+ok: [localhost] => {"changed": false, "igw_id": "igw-60a51605", "subnets": [{"az": "eu-west-1c", "cidr": "10.0.8.0/24", "id": "subnet-2a54044f", "resource_tags": {"env": "test", "name": "mongoc", "tier": "db"}}, {"az": "eu-west-1a", "cidr": "10.0.0.0/24", "id": "subnet-510b7326", "resource_tags": {"env": "test", "name": "nata", "tier": "nat"}}, {"az": "eu-west-1a", "cidr": "10.0.6.0/24", "id": "subnet-5d0b732a", "resource_tags": {"env": "test", "name": "mongoa", "tier": "db"}}, {"az": "eu-west-1b", "cidr": "10.0.1.0/24", "id": "subnet-7672e12f", "resource_tags": {"env": "test", "name": "natb", "tier": "nat"}}, {"az": "eu-west-1c", "cidr": "10.0.2.0/24", "id": "subnet-2d540448", "resource_tags": {"env": "test", "name": "natc", "tier": "nat"}}, {"az": "eu-west-1a", "cidr": "10.0.3.0/24", "id": "subnet-500b7327", "resource_tags": {"env": "test", "name": "weba", "tier": "web"}}, {"az": "eu-west-1b", "cidr": "10.0.7.0/24", "id": "subnet-6d72e134", "resource_tags": {"env": "test", "name": "mongob", "tier": "db"}}, {"az": "eu-west-1c", "cidr": "10.0.5.0/24", "id": "subnet-2e54044b", "resource_tags": {"env": "test", "name": "webc", "tier": "web"}}, {"az": "eu-west-1b", "cidr": "10.0.4.0/24", "id": "subnet-6872e131", "resource_tags": {"env": "test", "name": "webb", "tier": "web"}}], "vpc": {"cidr_block": "10.0.0.0/16", "dhcp_options_id": "dopt-df8466ba", "id": "vpc-911c7af4", "region": "eu-west-1", "state": "available"}, "vpc_id": "vpc-911c7af4"}
+
+TASK [test-build : debug var=vpc] **********************************************
+ok: [localhost] => {
+    "changed": false, 
+    "vpc": {
+        "changed": false, 
+        "igw_id": "igw-60a51605", 
+        "subnets": [
+            {
+                "az": "eu-west-1c", 
+                "cidr": "10.0.8.0/24", 
+                "id": "subnet-2a54044f", 
+                "resource_tags": {
+                    "env": "test", 
+                    "name": "mongoc", 
+                    "tier": "db"
+                }
+            }, 
+            {
+                "az": "eu-west-1a", 
+                "cidr": "10.0.0.0/24", 
+                "id": "subnet-510b7326", 
+                "resource_tags": {
+                    "env": "test", 
+                    "name": "nata", 
+                    "tier": "nat"
+                }
+            }, 
+            {
+                "az": "eu-west-1a", 
+                "cidr": "10.0.6.0/24", 
+                "id": "subnet-5d0b732a", 
+                "resource_tags": {
+                    "env": "test", 
+                    "name": "mongoa", 
+                    "tier": "db"
+                }
+            }, 
+            {
+                "az": "eu-west-1b", 
+                "cidr": "10.0.1.0/24", 
+                "id": "subnet-7672e12f", 
+                "resource_tags": {
+                    "env": "test", 
+                    "name": "natb", 
+                    "tier": "nat"
+                }
+            }, 
+            {
+                "az": "eu-west-1c", 
+                "cidr": "10.0.2.0/24", 
+                "id": "subnet-2d540448", 
+                "resource_tags": {
+                    "env": "test", 
+                    "name": "natc", 
+                    "tier": "nat"
+                }
+            }, 
+            {
+                "az": "eu-west-1a", 
+                "cidr": "10.0.3.0/24", 
+                "id": "subnet-500b7327", 
+                "resource_tags": {
+                    "env": "test", 
+                    "name": "weba", 
+                    "tier": "web"
+                }
+            }, 
+            {
+                "az": "eu-west-1b", 
+                "cidr": "10.0.7.0/24", 
+                "id": "subnet-6d72e134", 
+                "resource_tags": {
+                    "env": "test", 
+                    "name": "mongob", 
+                    "tier": "db"
+                }
+            }, 
+            {
+                "az": "eu-west-1c", 
+                "cidr": "10.0.5.0/24", 
+                "id": "subnet-2e54044b", 
+                "resource_tags": {
+                    "env": "test", 
+                    "name": "webc", 
+                    "tier": "web"
+                }
+            }, 
+            {
+                "az": "eu-west-1b", 
+                "cidr": "10.0.4.0/24", 
+                "id": "subnet-6872e131", 
+                "resource_tags": {
+                    "env": "test", 
+                    "name": "webb", 
+                    "tier": "web"
+                }
+            }
+        ], 
+        "vpc": {
+            "cidr_block": "10.0.0.0/16", 
+            "dhcp_options_id": "dopt-df8466ba", 
+            "id": "vpc-911c7af4", 
+            "region": "eu-west-1", 
+            "state": "available"
+        }, 
+        "vpc_id": "vpc-911c7af4"
+    }
+}
+
+TASK [test-build : set_fact vpc_id={{ vpc.vpc_id }}] ***************************
+ok: [localhost] => {"ansible_facts": {"vpc_id": "vpc-911c7af4"}, "changed": false}
+
+TASK [test-build : nat subnets] ************************************************
+ok: [localhost] => (item={u'subnet': u'0', u'az': u'a'}) => {"changed": false, "item": {"az": "a", "subnet": "0"}, "subnet": {"availability_zone": "eu-west-1a", "available_ip_address_count": 251, "cidr_block": "10.0.0.0/24", "default_for_az": "false", "id": "subnet-510b7326", "map_public_ip_on_launch": "false", "state": "available", "tags": {"env": "test", "name": "nata", "tier": "nat"}, "vpc_id": "vpc-911c7af4"}}
+ok: [localhost] => (item={u'subnet': u'1', u'az': u'b'}) => {"changed": false, "item": {"az": "b", "subnet": "1"}, "subnet": {"availability_zone": "eu-west-1b", "available_ip_address_count": 251, "cidr_block": "10.0.1.0/24", "default_for_az": "false", "id": "subnet-7672e12f", "map_public_ip_on_launch": "false", "state": "available", "tags": {"env": "test", "name": "natb", "tier": "nat"}, "vpc_id": "vpc-911c7af4"}}
+ok: [localhost] => (item={u'subnet': u'2', u'az': u'c'}) => {"changed": false, "item": {"az": "c", "subnet": "2"}, "subnet": {"availability_zone": "eu-west-1c", "available_ip_address_count": 251, "cidr_block": "10.0.2.0/24", "default_for_az": "false", "id": "subnet-2d540448", "map_public_ip_on_launch": "false", "state": "available", "tags": {"env": "test", "name": "natc", "tier": "nat"}, "vpc_id": "vpc-911c7af4"}}
+
+TASK [test-build : debug var=nat_subnets] **************************************
+ok: [localhost] => {
+    "changed": false, 
+    "nat_subnets": {
+        "changed": false, 
+        "msg": "All items completed", 
+        "results": [
+            {
+                "changed": false, 
+                "item": {
+                    "az": "a", 
+                    "subnet": "0"
+                }, 
+                "subnet": {
+                    "availability_zone": "eu-west-1a", 
+                    "available_ip_address_count": 251, 
+                    "cidr_block": "10.0.0.0/24", 
+                    "default_for_az": "false", 
+                    "id": "subnet-510b7326", 
+                    "map_public_ip_on_launch": "false", 
+                    "state": "available", 
+                    "tags": {
+                        "env": "test", 
+                        "name": "nata", 
+                        "tier": "nat"
+                    }, 
+                    "vpc_id": "vpc-911c7af4"
+                }
+            }, 
+            {
+                "changed": false, 
+                "item": {
+                    "az": "b", 
+                    "subnet": "1"
+                }, 
+                "subnet": {
+                    "availability_zone": "eu-west-1b", 
+                    "available_ip_address_count": 251, 
+                    "cidr_block": "10.0.1.0/24", 
+                    "default_for_az": "false", 
+                    "id": "subnet-7672e12f", 
+                    "map_public_ip_on_launch": "false", 
+                    "state": "available", 
+                    "tags": {
+                        "env": "test", 
+                        "name": "natb", 
+                        "tier": "nat"
+                    }, 
+                    "vpc_id": "vpc-911c7af4"
+                }
+            }, 
+            {
+                "changed": false, 
+                "item": {
+                    "az": "c", 
+                    "subnet": "2"
+                }, 
+                "subnet": {
+                    "availability_zone": "eu-west-1c", 
+                    "available_ip_address_count": 251, 
+                    "cidr_block": "10.0.2.0/24", 
+                    "default_for_az": "false", 
+                    "id": "subnet-2d540448", 
+                    "map_public_ip_on_launch": "false", 
+                    "state": "available", 
+                    "tags": {
+                        "env": "test", 
+                        "name": "natc", 
+                        "tier": "nat"
+                    }, 
+                    "vpc_id": "vpc-911c7af4"
+                }
+            }
+        ]
+    }
+}
+
+TASK [test-build : web subnets] ************************************************
+ok: [localhost] => (item={u'subnet': u'3', u'az': u'a'}) => {"changed": false, "item": {"az": "a", "subnet": "3"}, "subnet": {"availability_zone": "eu-west-1a", "available_ip_address_count": 251, "cidr_block": "10.0.3.0/24", "default_for_az": "false", "id": "subnet-500b7327", "map_public_ip_on_launch": "false", "state": "available", "tags": {"env": "test", "name": "weba", "tier": "web"}, "vpc_id": "vpc-911c7af4"}}
+ok: [localhost] => (item={u'subnet': u'4', u'az': u'b'}) => {"changed": false, "item": {"az": "b", "subnet": "4"}, "subnet": {"availability_zone": "eu-west-1b", "available_ip_address_count": 251, "cidr_block": "10.0.4.0/24", "default_for_az": "false", "id": "subnet-6872e131", "map_public_ip_on_launch": "false", "state": "available", "tags": {"env": "test", "name": "webb", "tier": "web"}, "vpc_id": "vpc-911c7af4"}}
+ok: [localhost] => (item={u'subnet': u'5', u'az': u'c'}) => {"changed": false, "item": {"az": "c", "subnet": "5"}, "subnet": {"availability_zone": "eu-west-1c", "available_ip_address_count": 251, "cidr_block": "10.0.5.0/24", "default_for_az": "false", "id": "subnet-2e54044b", "map_public_ip_on_launch": "false", "state": "available", "tags": {"env": "test", "name": "webc", "tier": "web"}, "vpc_id": "vpc-911c7af4"}}
+
+TASK [test-build : mongo subnets] **********************************************
+ok: [localhost] => (item={u'subnet': u'6', u'az': u'a'}) => {"changed": false, "item": {"az": "a", "subnet": "6"}, "subnet": {"availability_zone": "eu-west-1a", "available_ip_address_count": 251, "cidr_block": "10.0.6.0/24", "default_for_az": "false", "id": "subnet-5d0b732a", "map_public_ip_on_launch": "false", "state": "available", "tags": {"env": "test", "name": "mongoa", "tier": "db"}, "vpc_id": "vpc-911c7af4"}}
+ok: [localhost] => (item={u'subnet': u'7', u'az': u'b'}) => {"changed": false, "item": {"az": "b", "subnet": "7"}, "subnet": {"availability_zone": "eu-west-1b", "available_ip_address_count": 251, "cidr_block": "10.0.7.0/24", "default_for_az": "false", "id": "subnet-6d72e134", "map_public_ip_on_launch": "false", "state": "available", "tags": {"env": "test", "name": "mongob", "tier": "db"}, "vpc_id": "vpc-911c7af4"}}
+ok: [localhost] => (item={u'subnet': u'8', u'az': u'c'}) => {"changed": false, "item": {"az": "c", "subnet": "8"}, "subnet": {"availability_zone": "eu-west-1c", "available_ip_address_count": 251, "cidr_block": "10.0.8.0/24", "default_for_az": "false", "id": "subnet-2a54044f", "map_public_ip_on_launch": "false", "state": "available", "tags": {"env": "test", "name": "mongoc", "tier": "db"}, "vpc_id": "vpc-911c7af4"}}
+
+TASK [test-build : internet gateway] *******************************************
+ok: [localhost] => {"changed": false, "gateway_id": "igw-60a51605"}
+
+TASK [test-build : nat internet route table] ***********************************
+changed: [localhost] => {"changed": true, "route_table": {"id": "rtb-5d9de738", "routes": [{"destination_cidr_block": "10.0.0.0/16", "gateway_id": "local", "instance_id": null, "interface_id": null, "state": "active", "vpc_peering_connection_id": null}], "tags": {}, "vpc_id": "vpc-911c7af4"}}
+
+TASK [test-build : web security group] *****************************************
+ok: [localhost] => {"changed": false, "group_id": "sg-90ba7cf4"}
+
+TASK [test-build : ssh security group] *****************************************
+ok: [localhost] => {"changed": false, "group_id": "sg-92ba7cf6"}
+
+TASK [test-build : debug var=nat_subnets.results[0].subnet.id] *****************
+ok: [localhost] => {
+    "changed": false, 
+    "nat_subnets.results[0].subnet.id": "subnet-510b7326"
+}
+
+TASK [test-build : Create nats] ************************************************
+fatal: [localhost]: FAILED! => {"failed": true, "msg": "ERROR! 'dict object' has no attribute 'subnet'"}
+
+PLAY RECAP *********************************************************************
+localhost                  : ok=14   changed=1    unreachable=0    failed=1   
+
