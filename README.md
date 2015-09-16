@@ -1,6 +1,10 @@
 #ansible node app example
 ansible-playbook -i hosts -e "type=test" playbooks/test-provision.yml  -vv
 
+##Requirements
+Ansible 2 for ec2 - get ansible from source
+Boto3 - pip install boto3
+
 ##Done
 3 Nats and VPC
 
@@ -9,8 +13,6 @@ ansible-playbook -i hosts -e "type=test" playbooks/test-provision.yml  -vv
 3 Sunbets for App
 
 ##Refactoring required so far
-Resuability: Loops for subnets etc
-
 NATs as ASG with size of 1
 
 #TODO:

@@ -150,10 +150,30 @@
     - { name: 'natA', id: 0 }
     - { name: 'natB', id: 1 }
     - { name: 'natC', id: 2 }
-  register: nat
+  register: nats
 
-- debug: var=nat
+- debug: var=nats
 
+#- debug: var=nats.results[0].tagged_instances[0].id
+#- debug: var=nats.results[1].tagged_instances[0].id
+
+#for the moment use one nat
+- name: Set up NAT-protected route table A
+  local_action:
+    module: ec2_vpc_route_table
+    vpc_id: "{{ vpc_id }}"
+    region: "{{ region }}"
+    resource_tags: { Name: test, env: "{{env}}" }
+    subnets:
+      - "{{ cidr_lhs }}.3.0/24"
+      - "{{ cidr_lhs }}.4.0/24"
+      - "{{ cidr_lhs }}.5.0/24"
+      - "{{ cidr_lhs }}.6.0/24"
+      - "{{ cidr_lhs }}.7.0/24"
+    routes:
+      - dest: 0.0.0.0/0
+        instance_id: "{{ nats.results[0].tagged_instances[0].id }}"
+  register: int_route_table
 #- name: Set up NAT-protected route table
 #  ec2_vpc_route_table:
 #    vpc_id: vpc-1245678
