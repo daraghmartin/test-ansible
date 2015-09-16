@@ -220,10 +220,19 @@ TASK [test-build : internet gateway] *******************************************
 ok: [localhost] => {"changed": false, "gateway_id": "igw-60a51605"}
 
 TASK [test-build : nat internet route table] ***********************************
-changed: [localhost] => {"changed": true, "route_table": {"id": "rtb-9090eaf5", "routes": [{"destination_cidr_block": "10.0.0.0/16", "gateway_id": "local", "instance_id": null, "interface_id": null, "state": "active", "vpc_peering_connection_id": null}], "tags": {}, "vpc_id": "vpc-911c7af4"}}
+changed: [localhost] => {"changed": true, "route_table": {"id": "rtb-e9e19b8c", "routes": [{"destination_cidr_block": "10.0.0.0/16", "gateway_id": "local", "instance_id": null, "interface_id": null, "state": "active", "vpc_peering_connection_id": null}], "tags": {}, "vpc_id": "vpc-911c7af4"}}
 
 TASK [test-build : web security group] *****************************************
 ok: [localhost] => {"changed": false, "group_id": "sg-90ba7cf4"}
+
+TASK [test-build : debug var=web_sg] *******************************************
+ok: [localhost] => {
+    "changed": false, 
+    "web_sg": {
+        "changed": false, 
+        "group_id": "sg-90ba7cf4"
+    }
+}
 
 TASK [test-build : ssh security group] *****************************************
 ok: [localhost] => {"changed": false, "group_id": "sg-92ba7cf6"}
@@ -403,21 +412,21 @@ ok: [localhost] => {
     }
 }
 
-TASK [test-build : debug var=nats.results[0].tagged_instances[0].id] ***********
-ok: [localhost] => {
-    "changed": false, 
-    "nats.results[0].tagged_instances[0].id": "i-7a4a10db"
-}
-
-TASK [test-build : debug var=nats.results[1].tagged_instances[0].id] ***********
-ok: [localhost] => {
-    "changed": false, 
-    "nats.results[1].tagged_instances[0].id": "i-1cb5e8b1"
-}
-
 TASK [test-build : Set up NAT-protected route table A] *************************
-fatal: [localhost]: FAILED! => {"failed": true, "msg": "ERROR! 'dict object' has no attribute 'instance_id'"}
+ok: [localhost] => {"changed": false, "route_table": {"id": "rtb-0d91eb68", "routes": [{"destination_cidr_block": "10.0.0.0/16", "gateway_id": "local", "instance_id": null, "interface_id": null, "state": "active", "vpc_peering_connection_id": null}, {"destination_cidr_block": "0.0.0.0/0", "gateway_id": null, "instance_id": "i-7a4a10db", "interface_id": "eni-70652339", "state": "active", "vpc_peering_connection_id": null}], "tags": {"Name": "test", "env": "test"}, "vpc_id": "vpc-911c7af4"}}
+
+TASK [test-build : debug var=web_sg.group_id] **********************************
+ok: [localhost] => {
+    "changed": false, 
+    "web_sg.group_id": "sg-90ba7cf4"
+}
+
+TASK [test-build : web launch config] ******************************************
+changed: [localhost] => {"arn": "arn:aws:autoscaling:eu-west-1:340853365460:launchConfiguration:495610f6-c601-46c8-834e-07e6c962dd32:launchConfigurationName/web_lc", "changed": true, "created_time": "2015-09-16 11:57:24.056000", "image_id": "ami-47a23a30", "instance_type": "t2.micro", "name": "web_lc", "result": {"associate_public_ip_address": null, "block_device_mappings": [{"device_name": "/dev/sda1", "ebs": {"snapshot_id": null, "volume_size": "100"}, "virtual_name": null}], "classic_link_vpc_id": null, "classic_link_vpc_security_groups": [], "created_time": "2015-09-16 11:57:24.056000", "delete_on_termination": true, "ebs_optimized": false, "image_id": "ami-47a23a30", "instance_monitoring": false, "instance_profile_name": null, "instance_type": "t2.micro", "iops": null, "kernel_id": "", "key_name": "builder0", "launch_configuration_arn": "arn:aws:autoscaling:eu-west-1:340853365460:launchConfiguration:495610f6-c601-46c8-834e-07e6c962dd32:launchConfigurationName/web_lc", "member": "\n      ", "name": "web_lc", "ramdisk_id": "", "security_groups": ["sg-90ba7cf4"], "spot_price": null, "use_block_device_types": false, "user_data": "", "volume_type": null}, "security_groups": ["sg-90ba7cf4"]}
+
+TASK [test-build : web asg] ****************************************************
+changed: [localhost] => {"availability_zones": ["eu-west-1a", "eu-west-1b", "eu-west-1c"], "changed": true, "default_cooldown": 300, "desired_capacity": 3, "health_check_period": 60, "health_check_type": "ELB", "healthy_instances": 3, "in_service_instances": 3, "instance_facts": {"i-07207caa": {"health_status": "Healthy", "launch_config_name": "web_lc", "lifecycle_state": "InService"}, "i-44fe22e8": {"health_status": "Healthy", "launch_config_name": "web_lc", "lifecycle_state": "InService"}, "i-5e6643ff": {"health_status": "Healthy", "launch_config_name": "web_lc", "lifecycle_state": "InService"}}, "instances": ["i-44fe22e8", "i-5e6643ff", "i-07207caa"], "launch_config_name": "web_lc", "load_balancers": [], "max_size": 3, "min_size": 3, "name": "web_asg", "pending_instances": 0, "placement_group": null, "tags": {"Name": "webxx"}, "terminating_instances": 0, "termination_policies": ["Default"], "unhealthy_instances": 0, "viable_instances": 3, "vpc_zone_identifier": "subnet-500b7327,subnet-6872e131,subnet-2e54044b"}
 
 PLAY RECAP *********************************************************************
-localhost                  : ok=18   changed=1    unreachable=0    failed=1   
+localhost                  : ok=21   changed=3    unreachable=0    failed=0   
 

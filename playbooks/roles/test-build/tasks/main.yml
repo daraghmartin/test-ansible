@@ -7,7 +7,7 @@
     cidr_block: "{{ cidr_lhs }}.0.0/16"
   register: vpc
 
-- debug: var=vpc
+#- debug: var=vpc
 
 - set_fact: vpc_id={{ vpc.vpc_id }}
 
@@ -29,7 +29,7 @@
     - { az: "c", subnet: "2" }
   register: nat_subnets
 
-- debug: var=nat_subnets
+#- debug: var=nat_subnets
 
 - name: web subnets
   local_action:
@@ -110,6 +110,9 @@
       from_port: 443
       to_port: 443
       cidr_ip: 0.0.0.0/0
+  register: web_sg
+
+#- debug: var=web_sg
 
 - name: ssh security group
   local_action:
@@ -123,9 +126,9 @@
       from_port: 22
       to_port: 22
       cidr_ip: 0.0.0.0/0
+  register: ssh_sg
 
-- debug: var=nat_subnets.results[0].subnet.id
-
+#- debug: var=nat_subnets.results[0].subnet.id
 
 - name: Create nats
   local_action:
@@ -137,6 +140,7 @@
     group: [vpc-web, vpc-ssh]
     instance_tags: { Name: ansibletest, type: nat, env: "{{ env }}" }
     vpc_subnet_id: "{{ nat_subnets.results[item.id].subnet.id}}"
+    source_dest_check: False
     wait: true
     instance_tags: 
       Name: "{{ environ|default('dev') + '_' + item.name }}"
@@ -152,7 +156,7 @@
     - { name: 'natC', id: 2 }
   register: nats
 
-- debug: var=nats
+#- debug: var=nats
 
 #- debug: var=nats.results[0].tagged_instances[0].id
 #- debug: var=nats.results[1].tagged_instances[0].id
@@ -170,21 +174,46 @@
       - "{{ cidr_lhs }}.5.0/24"
       - "{{ cidr_lhs }}.6.0/24"
       - "{{ cidr_lhs }}.7.0/24"
+      - "{{ cidr_lhs }}.8.0/24"
     routes:
       - dest: 0.0.0.0/0
         instance_id: "{{ nats.results[0].tagged_instances[0].id }}"
   register: int_route_table
-#- name: Set up NAT-protected route table
-#  ec2_vpc_route_table:
-#    vpc_id: vpc-1245678
-#    region: us-west-1
-#    tags:
-#      - Name: Internal
-#    subnets:
-#      - "{{ application_subnet.subnet_id }}"
-#      - 'Database Subnet'
-#      - '10.0.0.0/8'
-#    routes:
-#      - dest: 0.0.0.0/0
-#        instance_id: "{{ nat.instance_id }}"
-#  register: nat_route_table
+
+#- debug: var=web_sg.group_id
+
+- name: web launch config
+  local_action:
+    module: ec2_lc
+    name: web_lc
+    region: "{{ region }}"
+    image_id: "{{ default_image }}"
+    key_name: "{{ key }}"
+    security_groups: 
+      - "{{ web_sg.group_id }}" 
+      - "{{ ssh_sg.group_id }}"
+    instance_type: "{{ default_image_size }}"
+    volumes:
+    - device_name: /dev/sda1
+      volume_size: 100
+      device_type: io1
+      delete_on_termination: true
+      iops: 3000
+  register: web_lc
+
+- name: web asg
+  local_action:
+    module: ec2_asg
+    name: web_asg
+    launch_config_name: web_lc
+    health_check_period: 60
+    health_check_type: ELB
+    replace_all_instances: yes
+    tags:
+      - Name: "webxx"
+    min_size: 3
+    max_size: 3
+    desired_capacity: 3
+    region: "{{ region }}"
+    vpc_zone_identifier: [ "{{web_subnets.results[0].subnet.id}}","{{web_subnets.results[1].subnet.id}}","{{web_subnets.results[2].subnet.id}}" ]
+  register: web_asg
