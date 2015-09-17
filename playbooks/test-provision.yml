@@ -3,6 +3,11 @@
    connection: local
    gather_facts: True
    pre_tasks:
-    - include_vars: vars/ec2_{{type}}.yml
+     - include_vars: vars/ec2_{{type}}.yml
    roles:
-    - test-build
+     - test-build
+
+ - hosts: mongo1
+   gather_facts: True
+   roles:
+     - deploy-mongo

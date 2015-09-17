@@ -1,0 +1,7 @@
+---
+
+ - hosts: mongo1
+   gather_facts: True
+   sudo: True
+   roles:
+     - deploy-mongo
