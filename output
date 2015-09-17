@@ -1,0 +1,432 @@
+Using /etc/ansible/ansible.cfg as config file
+1 plays in playbooks/test-provision.yml
+
+PLAY ***************************************************************************
+
+TASK [setup] *******************************************************************
+ok: [localhost]
+
+TASK [include_vars] ************************************************************
+ok: [localhost] => {"ansible_facts": {"cidr_lhs": 10.0, "default_image": "ami-47a23a30", "default_image_size": "t2.micro", "env": "test", "key": "builder0", "region": "eu-west-1"}, "changed": false}
+
+TASK [test-build : create a vpc] ***********************************************
+ok: [localhost] => {"changed": false, "igw_id": "igw-60a51605", "subnets": [{"az": "eu-west-1c", "cidr": "10.0.8.0/24", "id": "subnet-2a54044f", "resource_tags": {"env": "test", "name": "mongoc", "tier": "db"}}, {"az": "eu-west-1a", "cidr": "10.0.0.0/24", "id": "subnet-510b7326", "resource_tags": {"env": "test", "name": "nata", "tier": "nat"}}, {"az": "eu-west-1a", "cidr": "10.0.6.0/24", "id": "subnet-5d0b732a", "resource_tags": {"env": "test", "name": "mongoa", "tier": "db"}}, {"az": "eu-west-1b", "cidr": "10.0.1.0/24", "id": "subnet-7672e12f", "resource_tags": {"env": "test", "name": "natb", "tier": "nat"}}, {"az": "eu-west-1c", "cidr": "10.0.2.0/24", "id": "subnet-2d540448", "resource_tags": {"env": "test", "name": "natc", "tier": "nat"}}, {"az": "eu-west-1a", "cidr": "10.0.3.0/24", "id": "subnet-500b7327", "resource_tags": {"env": "test", "name": "weba", "tier": "web"}}, {"az": "eu-west-1b", "cidr": "10.0.7.0/24", "id": "subnet-6d72e134", "resource_tags": {"env": "test", "name": "mongob", "tier": "db"}}, {"az": "eu-west-1c", "cidr": "10.0.5.0/24", "id": "subnet-2e54044b", "resource_tags": {"env": "test", "name": "webc", "tier": "web"}}, {"az": "eu-west-1b", "cidr": "10.0.4.0/24", "id": "subnet-6872e131", "resource_tags": {"env": "test", "name": "webb", "tier": "web"}}], "vpc": {"cidr_block": "10.0.0.0/16", "dhcp_options_id": "dopt-df8466ba", "id": "vpc-911c7af4", "region": "eu-west-1", "state": "available"}, "vpc_id": "vpc-911c7af4"}
+
+TASK [test-build : debug var=vpc] **********************************************
+ok: [localhost] => {
+    "changed": false, 
+    "vpc": {
+        "changed": false, 
+        "igw_id": "igw-60a51605", 
+        "subnets": [
+            {
+                "az": "eu-west-1c", 
+                "cidr": "10.0.8.0/24", 
+                "id": "subnet-2a54044f", 
+                "resource_tags": {
+                    "env": "test", 
+                    "name": "mongoc", 
+                    "tier": "db"
+                }
+            }, 
+            {
+                "az": "eu-west-1a", 
+                "cidr": "10.0.0.0/24", 
+                "id": "subnet-510b7326", 
+                "resource_tags": {
+                    "env": "test", 
+                    "name": "nata", 
+                    "tier": "nat"
+                }
+            }, 
+            {
+                "az": "eu-west-1a", 
+                "cidr": "10.0.6.0/24", 
+                "id": "subnet-5d0b732a", 
+                "resource_tags": {
+                    "env": "test", 
+                    "name": "mongoa", 
+                    "tier": "db"
+                }
+            }, 
+            {
+                "az": "eu-west-1b", 
+                "cidr": "10.0.1.0/24", 
+                "id": "subnet-7672e12f", 
+                "resource_tags": {
+                    "env": "test", 
+                    "name": "natb", 
+                    "tier": "nat"
+                }
+            }, 
+            {
+                "az": "eu-west-1c", 
+                "cidr": "10.0.2.0/24", 
+                "id": "subnet-2d540448", 
+                "resource_tags": {
+                    "env": "test", 
+                    "name": "natc", 
+                    "tier": "nat"
+                }
+            }, 
+            {
+                "az": "eu-west-1a", 
+                "cidr": "10.0.3.0/24", 
+                "id": "subnet-500b7327", 
+                "resource_tags": {
+                    "env": "test", 
+                    "name": "weba", 
+                    "tier": "web"
+                }
+            }, 
+            {
+                "az": "eu-west-1b", 
+                "cidr": "10.0.7.0/24", 
+                "id": "subnet-6d72e134", 
+                "resource_tags": {
+                    "env": "test", 
+                    "name": "mongob", 
+                    "tier": "db"
+                }
+            }, 
+            {
+                "az": "eu-west-1c", 
+                "cidr": "10.0.5.0/24", 
+                "id": "subnet-2e54044b", 
+                "resource_tags": {
+                    "env": "test", 
+                    "name": "webc", 
+                    "tier": "web"
+                }
+            }, 
+            {
+                "az": "eu-west-1b", 
+                "cidr": "10.0.4.0/24", 
+                "id": "subnet-6872e131", 
+                "resource_tags": {
+                    "env": "test", 
+                    "name": "webb", 
+                    "tier": "web"
+                }
+            }
+        ], 
+        "vpc": {
+            "cidr_block": "10.0.0.0/16", 
+            "dhcp_options_id": "dopt-df8466ba", 
+            "id": "vpc-911c7af4", 
+            "region": "eu-west-1", 
+            "state": "available"
+        }, 
+        "vpc_id": "vpc-911c7af4"
+    }
+}
+
+TASK [test-build : set_fact vpc_id={{ vpc.vpc_id }}] ***************************
+ok: [localhost] => {"ansible_facts": {"vpc_id": "vpc-911c7af4"}, "changed": false}
+
+TASK [test-build : nat subnets] ************************************************
+ok: [localhost] => (item={u'subnet': u'0', u'az': u'a'}) => {"changed": false, "item": {"az": "a", "subnet": "0"}, "subnet": {"availability_zone": "eu-west-1a", "available_ip_address_count": 250, "cidr_block": "10.0.0.0/24", "default_for_az": "false", "id": "subnet-510b7326", "map_public_ip_on_launch": "false", "state": "available", "tags": {"env": "test", "name": "nata", "tier": "nat"}, "vpc_id": "vpc-911c7af4"}}
+ok: [localhost] => (item={u'subnet': u'1', u'az': u'b'}) => {"changed": false, "item": {"az": "b", "subnet": "1"}, "subnet": {"availability_zone": "eu-west-1b", "available_ip_address_count": 250, "cidr_block": "10.0.1.0/24", "default_for_az": "false", "id": "subnet-7672e12f", "map_public_ip_on_launch": "false", "state": "available", "tags": {"env": "test", "name": "natb", "tier": "nat"}, "vpc_id": "vpc-911c7af4"}}
+ok: [localhost] => (item={u'subnet': u'2', u'az': u'c'}) => {"changed": false, "item": {"az": "c", "subnet": "2"}, "subnet": {"availability_zone": "eu-west-1c", "available_ip_address_count": 250, "cidr_block": "10.0.2.0/24", "default_for_az": "false", "id": "subnet-2d540448", "map_public_ip_on_launch": "false", "state": "available", "tags": {"env": "test", "name": "natc", "tier": "nat"}, "vpc_id": "vpc-911c7af4"}}
+
+TASK [test-build : debug var=nat_subnets] **************************************
+ok: [localhost] => {
+    "changed": false, 
+    "nat_subnets": {
+        "changed": false, 
+        "msg": "All items completed", 
+        "results": [
+            {
+                "changed": false, 
+                "item": {
+                    "az": "a", 
+                    "subnet": "0"
+                }, 
+                "subnet": {
+                    "availability_zone": "eu-west-1a", 
+                    "available_ip_address_count": 250, 
+                    "cidr_block": "10.0.0.0/24", 
+                    "default_for_az": "false", 
+                    "id": "subnet-510b7326", 
+                    "map_public_ip_on_launch": "false", 
+                    "state": "available", 
+                    "tags": {
+                        "env": "test", 
+                        "name": "nata", 
+                        "tier": "nat"
+                    }, 
+                    "vpc_id": "vpc-911c7af4"
+                }
+            }, 
+            {
+                "changed": false, 
+                "item": {
+                    "az": "b", 
+                    "subnet": "1"
+                }, 
+                "subnet": {
+                    "availability_zone": "eu-west-1b", 
+                    "available_ip_address_count": 250, 
+                    "cidr_block": "10.0.1.0/24", 
+                    "default_for_az": "false", 
+                    "id": "subnet-7672e12f", 
+                    "map_public_ip_on_launch": "false", 
+                    "state": "available", 
+                    "tags": {
+                        "env": "test", 
+                        "name": "natb", 
+                        "tier": "nat"
+                    }, 
+                    "vpc_id": "vpc-911c7af4"
+                }
+            }, 
+            {
+                "changed": false, 
+                "item": {
+                    "az": "c", 
+                    "subnet": "2"
+                }, 
+                "subnet": {
+                    "availability_zone": "eu-west-1c", 
+                    "available_ip_address_count": 250, 
+                    "cidr_block": "10.0.2.0/24", 
+                    "default_for_az": "false", 
+                    "id": "subnet-2d540448", 
+                    "map_public_ip_on_launch": "false", 
+                    "state": "available", 
+                    "tags": {
+                        "env": "test", 
+                        "name": "natc", 
+                        "tier": "nat"
+                    }, 
+                    "vpc_id": "vpc-911c7af4"
+                }
+            }
+        ]
+    }
+}
+
+TASK [test-build : web subnets] ************************************************
+ok: [localhost] => (item={u'subnet': u'3', u'az': u'a'}) => {"changed": false, "item": {"az": "a", "subnet": "3"}, "subnet": {"availability_zone": "eu-west-1a", "available_ip_address_count": 251, "cidr_block": "10.0.3.0/24", "default_for_az": "false", "id": "subnet-500b7327", "map_public_ip_on_launch": "false", "state": "available", "tags": {"env": "test", "name": "weba", "tier": "web"}, "vpc_id": "vpc-911c7af4"}}
+ok: [localhost] => (item={u'subnet': u'4', u'az': u'b'}) => {"changed": false, "item": {"az": "b", "subnet": "4"}, "subnet": {"availability_zone": "eu-west-1b", "available_ip_address_count": 251, "cidr_block": "10.0.4.0/24", "default_for_az": "false", "id": "subnet-6872e131", "map_public_ip_on_launch": "false", "state": "available", "tags": {"env": "test", "name": "webb", "tier": "web"}, "vpc_id": "vpc-911c7af4"}}
+ok: [localhost] => (item={u'subnet': u'5', u'az': u'c'}) => {"changed": false, "item": {"az": "c", "subnet": "5"}, "subnet": {"availability_zone": "eu-west-1c", "available_ip_address_count": 251, "cidr_block": "10.0.5.0/24", "default_for_az": "false", "id": "subnet-2e54044b", "map_public_ip_on_launch": "false", "state": "available", "tags": {"env": "test", "name": "webc", "tier": "web"}, "vpc_id": "vpc-911c7af4"}}
+
+TASK [test-build : mongo subnets] **********************************************
+ok: [localhost] => (item={u'subnet': u'6', u'az': u'a'}) => {"changed": false, "item": {"az": "a", "subnet": "6"}, "subnet": {"availability_zone": "eu-west-1a", "available_ip_address_count": 251, "cidr_block": "10.0.6.0/24", "default_for_az": "false", "id": "subnet-5d0b732a", "map_public_ip_on_launch": "false", "state": "available", "tags": {"env": "test", "name": "mongoa", "tier": "db"}, "vpc_id": "vpc-911c7af4"}}
+ok: [localhost] => (item={u'subnet': u'7', u'az': u'b'}) => {"changed": false, "item": {"az": "b", "subnet": "7"}, "subnet": {"availability_zone": "eu-west-1b", "available_ip_address_count": 251, "cidr_block": "10.0.7.0/24", "default_for_az": "false", "id": "subnet-6d72e134", "map_public_ip_on_launch": "false", "state": "available", "tags": {"env": "test", "name": "mongob", "tier": "db"}, "vpc_id": "vpc-911c7af4"}}
+ok: [localhost] => (item={u'subnet': u'8', u'az': u'c'}) => {"changed": false, "item": {"az": "c", "subnet": "8"}, "subnet": {"availability_zone": "eu-west-1c", "available_ip_address_count": 251, "cidr_block": "10.0.8.0/24", "default_for_az": "false", "id": "subnet-2a54044f", "map_public_ip_on_launch": "false", "state": "available", "tags": {"env": "test", "name": "mongoc", "tier": "db"}, "vpc_id": "vpc-911c7af4"}}
+
+TASK [test-build : internet gateway] *******************************************
+ok: [localhost] => {"changed": false, "gateway_id": "igw-60a51605"}
+
+TASK [test-build : nat internet route table] ***********************************
+changed: [localhost] => {"changed": true, "route_table": {"id": "rtb-e9e19b8c", "routes": [{"destination_cidr_block": "10.0.0.0/16", "gateway_id": "local", "instance_id": null, "interface_id": null, "state": "active", "vpc_peering_connection_id": null}], "tags": {}, "vpc_id": "vpc-911c7af4"}}
+
+TASK [test-build : web security group] *****************************************
+ok: [localhost] => {"changed": false, "group_id": "sg-90ba7cf4"}
+
+TASK [test-build : debug var=web_sg] *******************************************
+ok: [localhost] => {
+    "changed": false, 
+    "web_sg": {
+        "changed": false, 
+        "group_id": "sg-90ba7cf4"
+    }
+}
+
+TASK [test-build : ssh security group] *****************************************
+ok: [localhost] => {"changed": false, "group_id": "sg-92ba7cf6"}
+
+TASK [test-build : debug var=nat_subnets.results[0].subnet.id] *****************
+ok: [localhost] => {
+    "changed": false, 
+    "nat_subnets.results[0].subnet.id": "subnet-510b7326"
+}
+
+TASK [test-build : Create nats] ************************************************
+ok: [localhost] => (item={u'name': u'natA', u'id': 0}) => {"changed": false, "instance_ids": null, "instances": [], "item": {"id": 0, "name": "natA"}, "tagged_instances": [{"ami_launch_index": "0", "architecture": "x86_64", "block_device_mapping": {"/dev/sda1": {"delete_on_termination": true, "status": "attached", "volume_id": "vol-fe115d0e"}}, "dns_name": "ec2-52-18-178-0.eu-west-1.compute.amazonaws.com", "ebs_optimized": false, "groups": {"sg-90ba7cf4": "vpc-web", "sg-92ba7cf6": "vpc-ssh"}, "hypervisor": "xen", "id": "i-7a4a10db", "image_id": "ami-47a23a30", "instance_type": "t2.micro", "kernel": null, "key_name": "builder0", "launch_time": "2015-09-16T06:57:04.000Z", "placement": "eu-west-1a", "private_dns_name": "ip-10-0-0-65.eu-west-1.compute.internal", "private_ip": "10.0.0.65", "public_dns_name": "ec2-52-18-178-0.eu-west-1.compute.amazonaws.com", "public_ip": "52.18.178.0", "ramdisk": null, "region": "eu-west-1", "root_device_name": "/dev/sda1", "root_device_type": "ebs", "state": "running", "state_code": 16, "tags": {"Name": "dev_natA"}, "tenancy": "default", "virtualization_type": "hvm"}]}
+ok: [localhost] => (item={u'name': u'natB', u'id': 1}) => {"changed": false, "instance_ids": null, "instances": [], "item": {"id": 1, "name": "natB"}, "tagged_instances": [{"ami_launch_index": "0", "architecture": "x86_64", "block_device_mapping": {"/dev/sda1": {"delete_on_termination": true, "status": "attached", "volume_id": "vol-f855fd37"}}, "dns_name": "ec2-52-19-130-149.eu-west-1.compute.amazonaws.com", "ebs_optimized": false, "groups": {"sg-90ba7cf4": "vpc-web", "sg-92ba7cf6": "vpc-ssh"}, "hypervisor": "xen", "id": "i-1cb5e8b1", "image_id": "ami-47a23a30", "instance_type": "t2.micro", "kernel": null, "key_name": "builder0", "launch_time": "2015-09-16T06:57:46.000Z", "placement": "eu-west-1b", "private_dns_name": "ip-10-0-1-41.eu-west-1.compute.internal", "private_ip": "10.0.1.41", "public_dns_name": "ec2-52-19-130-149.eu-west-1.compute.amazonaws.com", "public_ip": "52.19.130.149", "ramdisk": null, "region": "eu-west-1", "root_device_name": "/dev/sda1", "root_device_type": "ebs", "state": "running", "state_code": 16, "tags": {"Name": "dev_natB"}, "tenancy": "default", "virtualization_type": "hvm"}]}
+ok: [localhost] => (item={u'name': u'natC', u'id': 2}) => {"changed": false, "instance_ids": null, "instances": [], "item": {"id": 2, "name": "natC"}, "tagged_instances": [{"ami_launch_index": "0", "architecture": "x86_64", "block_device_mapping": {"/dev/sda1": {"delete_on_termination": true, "status": "attached", "volume_id": "vol-ebfb5a28"}}, "dns_name": "ec2-52-19-67-159.eu-west-1.compute.amazonaws.com", "ebs_optimized": false, "groups": {"sg-90ba7cf4": "vpc-web", "sg-92ba7cf6": "vpc-ssh"}, "hypervisor": "xen", "id": "i-c8548964", "image_id": "ami-47a23a30", "instance_type": "t2.micro", "kernel": null, "key_name": "builder0", "launch_time": "2015-09-16T06:58:23.000Z", "placement": "eu-west-1c", "private_dns_name": "ip-10-0-2-171.eu-west-1.compute.internal", "private_ip": "10.0.2.171", "public_dns_name": "ec2-52-19-67-159.eu-west-1.compute.amazonaws.com", "public_ip": "52.19.67.159", "ramdisk": null, "region": "eu-west-1", "root_device_name": "/dev/sda1", "root_device_type": "ebs", "state": "running", "state_code": 16, "tags": {"Name": "dev_natC"}, "tenancy": "default", "virtualization_type": "hvm"}]}
+
+TASK [test-build : debug var=nats] *********************************************
+ok: [localhost] => {
+    "changed": false, 
+    "nats": {
+        "changed": false, 
+        "msg": "All items completed", 
+        "results": [
+            {
+                "changed": false, 
+                "instance_ids": null, 
+                "instances": [], 
+                "item": {
+                    "id": 0, 
+                    "name": "natA"
+                }, 
+                "tagged_instances": [
+                    {
+                        "ami_launch_index": "0", 
+                        "architecture": "x86_64", 
+                        "block_device_mapping": {
+                            "/dev/sda1": {
+                                "delete_on_termination": true, 
+                                "status": "attached", 
+                                "volume_id": "vol-fe115d0e"
+                            }
+                        }, 
+                        "dns_name": "ec2-52-18-178-0.eu-west-1.compute.amazonaws.com", 
+                        "ebs_optimized": false, 
+                        "groups": {
+                            "sg-90ba7cf4": "vpc-web", 
+                            "sg-92ba7cf6": "vpc-ssh"
+                        }, 
+                        "hypervisor": "xen", 
+                        "id": "i-7a4a10db", 
+                        "image_id": "ami-47a23a30", 
+                        "instance_type": "t2.micro", 
+                        "kernel": null, 
+                        "key_name": "builder0", 
+                        "launch_time": "2015-09-16T06:57:04.000Z", 
+                        "placement": "eu-west-1a", 
+                        "private_dns_name": "ip-10-0-0-65.eu-west-1.compute.internal", 
+                        "private_ip": "10.0.0.65", 
+                        "public_dns_name": "ec2-52-18-178-0.eu-west-1.compute.amazonaws.com", 
+                        "public_ip": "52.18.178.0", 
+                        "ramdisk": null, 
+                        "region": "eu-west-1", 
+                        "root_device_name": "/dev/sda1", 
+                        "root_device_type": "ebs", 
+                        "state": "running", 
+                        "state_code": 16, 
+                        "tags": {
+                            "Name": "dev_natA"
+                        }, 
+                        "tenancy": "default", 
+                        "virtualization_type": "hvm"
+                    }
+                ]
+            }, 
+            {
+                "changed": false, 
+                "instance_ids": null, 
+                "instances": [], 
+                "item": {
+                    "id": 1, 
+                    "name": "natB"
+                }, 
+                "tagged_instances": [
+                    {
+                        "ami_launch_index": "0", 
+                        "architecture": "x86_64", 
+                        "block_device_mapping": {
+                            "/dev/sda1": {
+                                "delete_on_termination": true, 
+                                "status": "attached", 
+                                "volume_id": "vol-f855fd37"
+                            }
+                        }, 
+                        "dns_name": "ec2-52-19-130-149.eu-west-1.compute.amazonaws.com", 
+                        "ebs_optimized": false, 
+                        "groups": {
+                            "sg-90ba7cf4": "vpc-web", 
+                            "sg-92ba7cf6": "vpc-ssh"
+                        }, 
+                        "hypervisor": "xen", 
+                        "id": "i-1cb5e8b1", 
+                        "image_id": "ami-47a23a30", 
+                        "instance_type": "t2.micro", 
+                        "kernel": null, 
+                        "key_name": "builder0", 
+                        "launch_time": "2015-09-16T06:57:46.000Z", 
+                        "placement": "eu-west-1b", 
+                        "private_dns_name": "ip-10-0-1-41.eu-west-1.compute.internal", 
+                        "private_ip": "10.0.1.41", 
+                        "public_dns_name": "ec2-52-19-130-149.eu-west-1.compute.amazonaws.com", 
+                        "public_ip": "52.19.130.149", 
+                        "ramdisk": null, 
+                        "region": "eu-west-1", 
+                        "root_device_name": "/dev/sda1", 
+                        "root_device_type": "ebs", 
+                        "state": "running", 
+                        "state_code": 16, 
+                        "tags": {
+                            "Name": "dev_natB"
+                        }, 
+                        "tenancy": "default", 
+                        "virtualization_type": "hvm"
+                    }
+                ]
+            }, 
+            {
+                "changed": false, 
+                "instance_ids": null, 
+                "instances": [], 
+                "item": {
+                    "id": 2, 
+                    "name": "natC"
+                }, 
+                "tagged_instances": [
+                    {
+                        "ami_launch_index": "0", 
+                        "architecture": "x86_64", 
+                        "block_device_mapping": {
+                            "/dev/sda1": {
+                                "delete_on_termination": true, 
+                                "status": "attached", 
+                                "volume_id": "vol-ebfb5a28"
+                            }
+                        }, 
+                        "dns_name": "ec2-52-19-67-159.eu-west-1.compute.amazonaws.com", 
+                        "ebs_optimized": false, 
+                        "groups": {
+                            "sg-90ba7cf4": "vpc-web", 
+                            "sg-92ba7cf6": "vpc-ssh"
+                        }, 
+                        "hypervisor": "xen", 
+                        "id": "i-c8548964", 
+                        "image_id": "ami-47a23a30", 
+                        "instance_type": "t2.micro", 
+                        "kernel": null, 
+                        "key_name": "builder0", 
+                        "launch_time": "2015-09-16T06:58:23.000Z", 
+                        "placement": "eu-west-1c", 
+                        "private_dns_name": "ip-10-0-2-171.eu-west-1.compute.internal", 
+                        "private_ip": "10.0.2.171", 
+                        "public_dns_name": "ec2-52-19-67-159.eu-west-1.compute.amazonaws.com", 
+                        "public_ip": "52.19.67.159", 
+                        "ramdisk": null, 
+                        "region": "eu-west-1", 
+                        "root_device_name": "/dev/sda1", 
+                        "root_device_type": "ebs", 
+                        "state": "running", 
+                        "state_code": 16, 
+                        "tags": {
+                            "Name": "dev_natC"
+                        }, 
+                        "tenancy": "default", 
+                        "virtualization_type": "hvm"
+                    }
+                ]
+            }
+        ]
+    }
+}
+
+TASK [test-build : Set up NAT-protected route table A] *************************
+ok: [localhost] => {"changed": false, "route_table": {"id": "rtb-0d91eb68", "routes": [{"destination_cidr_block": "10.0.0.0/16", "gateway_id": "local", "instance_id": null, "interface_id": null, "state": "active", "vpc_peering_connection_id": null}, {"destination_cidr_block": "0.0.0.0/0", "gateway_id": null, "instance_id": "i-7a4a10db", "interface_id": "eni-70652339", "state": "active", "vpc_peering_connection_id": null}], "tags": {"Name": "test", "env": "test"}, "vpc_id": "vpc-911c7af4"}}
+
+TASK [test-build : debug var=web_sg.group_id] **********************************
+ok: [localhost] => {
+    "changed": false, 
+    "web_sg.group_id": "sg-90ba7cf4"
+}
+
+TASK [test-build : web launch config] ******************************************
+changed: [localhost] => {"arn": "arn:aws:autoscaling:eu-west-1:340853365460:launchConfiguration:495610f6-c601-46c8-834e-07e6c962dd32:launchConfigurationName/web_lc", "changed": true, "created_time": "2015-09-16 11:57:24.056000", "image_id": "ami-47a23a30", "instance_type": "t2.micro", "name": "web_lc", "result": {"associate_public_ip_address": null, "block_device_mappings": [{"device_name": "/dev/sda1", "ebs": {"snapshot_id": null, "volume_size": "100"}, "virtual_name": null}], "classic_link_vpc_id": null, "classic_link_vpc_security_groups": [], "created_time": "2015-09-16 11:57:24.056000", "delete_on_termination": true, "ebs_optimized": false, "image_id": "ami-47a23a30", "instance_monitoring": false, "instance_profile_name": null, "instance_type": "t2.micro", "iops": null, "kernel_id": "", "key_name": "builder0", "launch_configuration_arn": "arn:aws:autoscaling:eu-west-1:340853365460:launchConfiguration:495610f6-c601-46c8-834e-07e6c962dd32:launchConfigurationName/web_lc", "member": "\n      ", "name": "web_lc", "ramdisk_id": "", "security_groups": ["sg-90ba7cf4"], "spot_price": null, "use_block_device_types": false, "user_data": "", "volume_type": null}, "security_groups": ["sg-90ba7cf4"]}
+
+TASK [test-build : web asg] ****************************************************
+changed: [localhost] => {"availability_zones": ["eu-west-1a", "eu-west-1b", "eu-west-1c"], "changed": true, "default_cooldown": 300, "desired_capacity": 3, "health_check_period": 60, "health_check_type": "ELB", "healthy_instances": 3, "in_service_instances": 3, "instance_facts": {"i-07207caa": {"health_status": "Healthy", "launch_config_name": "web_lc", "lifecycle_state": "InService"}, "i-44fe22e8": {"health_status": "Healthy", "launch_config_name": "web_lc", "lifecycle_state": "InService"}, "i-5e6643ff": {"health_status": "Healthy", "launch_config_name": "web_lc", "lifecycle_state": "InService"}}, "instances": ["i-44fe22e8", "i-5e6643ff", "i-07207caa"], "launch_config_name": "web_lc", "load_balancers": [], "max_size": 3, "min_size": 3, "name": "web_asg", "pending_instances": 0, "placement_group": null, "tags": {"Name": "webxx"}, "terminating_instances": 0, "termination_policies": ["Default"], "unhealthy_instances": 0, "viable_instances": 3, "vpc_zone_identifier": "subnet-500b7327,subnet-6872e131,subnet-2e54044b"}
+
+PLAY RECAP *********************************************************************
+localhost                  : ok=21   changed=3    unreachable=0    failed=0   
+
