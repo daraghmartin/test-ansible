@@ -1,0 +1,32 @@
+---
+- name: mkdir data
+  sudo: yes
+  file: path=/data01 state=directory
+
+#install
+#ref: https://github.com/UnderGreen/ansible-role-mongodb/blob/master/tasks/install.deb.yml
+#ref: http://www.murvinlai.com/nodejs--mongodb-on-aws.html
+#ref: http://docs.mongodb.org/manual/tutorial/install-mongodb-on-ubuntu/
+- name: Add APT key
+  apt_key: url="http://docs.mongodb.org/10gen-gpg-key.asc" id="7F0CEB10"
+
+- name: Add APT repository
+  apt_repository: repo="deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen" update_cache=yes
+
+- name: Install MongoDB package
+  apt: name={{item}} state=present
+  with_items:
+    - mongodb-org
+    - numactl
+
+- name: Ensure /data directory
+  file: path=/data01/db state=directory owner=mongodb recurse=yes
+
+- name: Configure mongodb
+  template: src=mongod.conf.j2 dest=/etc/mongod.conf backup=yes owner=root group=root mode=0644
+#TODO service notify  
+#  notify:
+#    - restart mongod
+
+- name: start mongo service
+  service: name=mongod enabled=yes state=restarted

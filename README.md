@@ -23,6 +23,9 @@ Routing
 
 3 Mongos with static addresses
 
+###APP
+Mongo running and configured on one instance
+
 ##Refactoring required/suggested so far
 NATs as 3 x ASG with size of 1 and ENI for routing
 
@@ -43,5 +46,5 @@ Mongo SG
 ##APP
 Node App
 
-3 Node Mongo
+3 Node Mongo Scale Out
 
