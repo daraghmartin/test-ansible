@@ -3,8 +3,14 @@ ansible-playbook -i hosts -e "type=test" playbooks/test-provision.yml  -vv
 
 ##Requirements
 Ansible 2 for ec2 - get ansible from source
+
 Boto3 - pip install boto3
 
+##Tested From
+One aws intance with full iam role/policy for provisioning etc
+
+.ssh/config setup to reach mongo boxes
+ 
 ##Done
 ###AWS
 99% done - need an ELB
@@ -17,9 +23,12 @@ Routing
 
 3 Mongos with static addresses
 
-##Refactoring required so far
+##Refactoring required/suggested so far
 NATs as 3 x ASG with size of 1 and ENI for routing
+
 Separate Volumes for Mongos
+
+Permanent IPs and DNS for Nat for ssh forwarding
 
 
 #TODO:
