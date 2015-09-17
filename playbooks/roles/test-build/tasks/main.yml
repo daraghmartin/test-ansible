@@ -162,6 +162,7 @@
 #- debug: var=nats.results[1].tagged_instances[0].id
 
 #for the moment use one nat
+#TODO: refactor for one nat per az
 - name: Set up NAT-protected route table A
   local_action:
     module: ec2_vpc_route_table
@@ -191,15 +192,13 @@
     group: [vpc-web, vpc-ssh]
     instance_tags: { Name: ansibletest, type: mongo, env: "{{ env }}" }
     vpc_subnet_id: "{{ mongo_subnets.results[item.id].subnet.id}}"
-    private_ip: "{{ cidr_lhs }}.{{ item.subnet_id }}.20"
-    #source_dest_check: False
+    private_ip: "{{ cidr_lhs }}.{{ item.subnet }}.20"
     wait: true
     instance_tags: 
       Name: "{{ environ|default('dev') + '_' + item.name }}"
     exact_count: 1
     count_tag: 
       Name: "{{ environ|default('dev') }}_{{item.name}}"
-    assign_public_ip: True
     user_data: |
       {{ lookup('template', 'templates/nat_user_data.j2') }}
   with_items:

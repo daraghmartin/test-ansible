@@ -6,23 +6,30 @@ Ansible 2 for ec2 - get ansible from source
 Boto3 - pip install boto3
 
 ##Done
+###AWS
+99% done - need an ELB
+
 3 Nats and VPC
 
-3 Subnets for Web
+Routing
 
-3 Sunbets for App
+3 Web in ASG
+
+3 Mongos with static addresses
 
 ##Refactoring required so far
-NATs as ASG with size of 1
+NATs as 3 x ASG with size of 1 and ENI for routing
+Separate Volumes for Mongos
+
 
 #TODO:
 
 ##AWS 
-Internal Routes to NATs
+ELB
 
-3 Web Servers in ASG
+Refactor with more loops to be more concise 
 
-3 Mongo Servers in ASG with 3 Volumes
+Mongo SG
 
 ##APP
 Node App
