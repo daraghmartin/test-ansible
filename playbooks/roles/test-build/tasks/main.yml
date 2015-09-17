@@ -180,7 +180,49 @@
         instance_id: "{{ nats.results[0].tagged_instances[0].id }}"
   register: int_route_table
 
+#TODO: SGs
+- name: Create mongos
+  local_action:
+    module: ec2
+    image: "{{ default_image }}"
+    region: "{{ region }}"
+    instance_type: "{{ default_image_size }}"
+    key_name: "{{ key }}"
+    group: [vpc-web, vpc-ssh]
+    instance_tags: { Name: ansibletest, type: mongo, env: "{{ env }}" }
+    vpc_subnet_id: "{{ mongo_subnets.results[item.id].subnet.id}}"
+    private_ip: "{{ cidr_lhs }}.{{ item.subnet_id }}.20"
+    #source_dest_check: False
+    wait: true
+    instance_tags: 
+      Name: "{{ environ|default('dev') + '_' + item.name }}"
+    exact_count: 1
+    count_tag: 
+      Name: "{{ environ|default('dev') }}_{{item.name}}"
+    assign_public_ip: True
+    user_data: |
+      {{ lookup('template', 'templates/nat_user_data.j2') }}
+  with_items:
+    - { name: 'mongoA', id: 0, subnet: 6 }
+    - { name: 'mongoB', id: 1, subnet: 7 }
+    - { name: 'mongoC', id: 2, subnet: 8 }
+  register: mongos
+
+
 #- debug: var=web_sg.group_id
+#- name:
+#  local_action:
+#    module: ec2_eni
+#    instance_id: "{{ mongos.results[item.id].tagged_instances[0].id }}"
+#    device_index: 1
+#    private_ip_address: "{{ cidr_lhs }}.{{ item.subnet_id }}.20"
+#    subnet_id: "{{ mongo_subnets.results[item.id].subnet.id}}"
+#    state: present
+#  with_items:
+#    - { id: 0, subnet: 6}
+#    - { id: 1, subnet: 7}
+#    - { id: 2, subnet: 8}
+#  register: mongo_enis
 
 - name: web launch config
   local_action:
@@ -217,3 +259,6 @@
     region: "{{ region }}"
     vpc_zone_identifier: [ "{{web_subnets.results[0].subnet.id}}","{{web_subnets.results[1].subnet.id}}","{{web_subnets.results[2].subnet.id}}" ]
   register: web_asg
+
+#ELB
+
